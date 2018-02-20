@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resize Demo</title>
+  <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+           rel = "stylesheet">
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <style>
+  #resizable { width: 250px; height: 150px; padding: 0.5em; }
+  </style>
+
+</head>
+<body>
+
+
+    <div id="draggableHelper" style="display:inline-block">
+        <img id="image" src="https://iffkkq-sn3302.files.1drv.com/y4muT9tLY479qCbwCFb2kPTyoUDzLwMzAPkUu89ZV5F0XgdsljFRtWNyfTHCyF2i_W-xCnOIIvqTit5c4EL9cgdo1zIF_rxeROPtFIfidi5il6sNXlG5YtBwczpvm44OsrTpf-y4_lGM6fEk4JxFiycxXt7Znzl-uspLO7E7t1GDVX9CC5hqN7ubftaZYUJHuN1BgrxrVkU67-a81cFL5EYhQ?width=636&height=590&cropmode=none">
+    </div>
+
+
+      <script>
+          $( function() {
+              $('#image').resizable();
+          } );
+      </script>
+</body>
+</html>

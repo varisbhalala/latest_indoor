@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+            html, body, #map-canvas {
+                height: 100%;
+                margin: 0px;
+                padding: 0px
+            }
+
+            .overlay{
+                border:1px double black;
+            }
+
+            #upload-form {
+                position: absolute;
+                top: 30px;
+                left: 50px;
+                z-index: 1;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map-canvas"></div>
+
+        <div id="upload-form">
+            <form>
+                <input type="file" value="Upload" onchange="previewFile()">
+                <img src="" height="100%" alt="Image preview...">
+
+            </form>
+        </div>
+
+        <!-- <script>
+            function previewFile(){
+                var preview = document.querySelector('img'); //selects the query named img
+                var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+                var reader  = new FileReader();
+
+                reader.onloadend = function () {
+                    preview.src = reader.result;
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file); //reads the data as a URL
+                } else {
+                    preview.src = "";
+                }
+                imgSrc = file;
+            console.log("The image source: " + imgSrc);
+            }
+
+            previewFile();  //calls the function named previewFile()
+
+            
+        </script> -->
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBZWmnDLUL4qwWOGqY0yQF2bCoQUW0hlvU&amp"></script>
+        <script src="js/1demo.js" type="text/javascript"></script>
+    </body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+    <!--Import user-defined css class-->
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" type="image/x-icon" href="images/Navigate.png">
+    <link rel="stylesheet" href="css/jquery.ui.rotatable.css">
+    <link rel="stylesheet" href="css/resizable.css">
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+    <style>
+        select {
+            display: block !important;
+        }
+    </style>
+
+    <!--<script-->
+    <!--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZWmnDLUL4qwWOGqY0yQF2bCoQUW0hlvU">-->
+    <!--</script>-->
+
+
+</head>
+
+<body>
+
+<!--Side navigation bar. (Hidden)-->
+<div class="row">
+    <div class="col s12 m4 l3">
+        <ul id="slide-out" class="side-nav">
+
+        </ul>
+    </div>
+
+    <div class="col s12 m8 l9">
+        <div id="map"></div>
+    </div>
+</div>
+<!--End of [hidden] sidebar.-->
+
+<!--Search box-->
+<div class="search-div">
+    <input id="search-input" class="controls" type="text" placeholder="Search Google Maps">
+
+
+</div>
+<!--End of search box-->
+
+
+<!--Start of fixed side header.-->
+<div class="fixed-header-div">
+    <div class="row">
+        <div id="div-heading">
+            <h5>WiFi tracking</h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s4"><a href="#tab1" class="active">Building</a></li>
+                <li class="tab col s4"><a href="#tab2">Floor</a></li>
+                <li class="tab col s4"><a href="#tab3">POI</a></li>
+            </ul>
+        </div>
+
+        <div id="tab1" class="col s12">
+            <!--Building name dropdown structure.-->
+            <!--<ul id="building-dropdown" class="dropdown-content">-->
+                <!--<li><a href="#">Demo</a></li>-->
+                <!--<li><a href="#">Demo</a></li>-->
+            <!--</ul>-->
+
+            <!--Building name dropdown button trigger.-->
+            <div class="row">
+                <h6>Select a building</h6>
+
+                <select id="buildings">
+                    <option value="-1">Select Building</option>
+
+
+                </select>
+            </div>
+
+
+            <h6>Building toolbox</h6>
+
+            <!--Building toolbox tabs.-->
+            <div id="building-toolbox">
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a href="#building-tab1">Add</a></li>
+                            <li class="tab col s3"><a href="#building-tab3">Delete</a></li>
+
+                        </ul>
+                    </div>
+
+                    <div id="building-tab1" class="col s12">
+                        <div class="row">
+                            <button class="btn waves-effect waves-light" type="button" onclick="addingBuilding();">Click
+                                here and Click on Map to Add Building
+                            </button>
+                        </div>
+
+                        <div id="edit-form">
+
+
+                            <div class="row">
+                                <div id="input-field" class="col s12">
+                                    <input placeholder="Building Name" id="building_name" type="text">
+                                </div>
+                            </div>
+
+
+                            <button class="btn waves-effect waves-light" type="button" onclick="saveBuilding();">Save
+                                Building
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div id="building-tab3" class="col s12">
+                        <div class="row">
+                            <h6>Are you sure you want to delete this building?</h6>
+                            <button class="btn waves-effect waves-light red" type="submit" name="action">Confirm
+                                deletion
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div id="tab2" class="col s12">
+            <div class="row">
+                <strong><h6 class="building-name">Building name</h6></strong>
+
+                <!--Floor dropdown structure.-->
+                <ul id="floor-dropdown" class="dropdown-content">
+                    <li><a href="#">Demo 1</a></li>
+                    <li><a href="#">Demo 2</a></li>
+                </ul>
+
+                <!--Floor dropdown trigger.-->
+                <a class="dropdown-button btn" href="#" data-activates="floor-dropdown">Select a floor</a>
+
+                <div id="divider"></div>
+
+                <div id="floor-toolbox">
+                    <h6>Floor toolbox</h6>
+
+                    <div class="row">
+                        <div class="col s12">
+                            <ul class="tabs">
+                                <li class="tab col s3"><a href="#floor-tab1">Add</a></li>
+                                <li class="tab col s3"><a href="#floor-tab2">Edit</a></li>
+                                <li class="tab col s3"><a href="#floor-tab3">Delete</a></li>
+                                <li class="tab col s3"><a href="#floor-tab4">WiFi Maps</a></li>
+                            </ul>
+                        </div>
+                        <form id="form1" runat="server" method="post">
+                            <div id="floor-tab1" class="col s12">
+                                <div class="row">
+                                    <h6>Floor number</h6>
+                                    <div class="row">
+                                        <div id="input-field" class="col s12">
+                                            <input placeholder="Write the floor number" id="floor-number" type="number"
+                                                   name="floor_no">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--<div class="row">-->
+                                <!--<h6>Floor name</h6>-->
+                                <!--<div class="row">-->
+                                <!--<div id="input-field" class="col s12">-->
+                                <!--<input placeholder="Write the floor name" id="floor-name" type="text"-->
+                                <!--name="floor_name">-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <!--</div>-->
+
+                                <div class="row">
+                                    <!-- <form action="#">
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span>File</span>
+                                                <input type="file">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text">
+                                            </div>
+                                        </div> -->
+                                    <!-- </form> -->
+
+
+                                    <input type='file' id="imgInp" name="image"/>
+                                    <button id="floor_control_bar" class="btn waves-effect" type="button"
+                                            onclick="cancelEvent()">Cancel
+                                    </button>
+                                    <a href="#" id="" class="btn waves-effect" onclick="addFloor()">Submit</a>
+                                </div>
+                        </form>
+
+
+                        <div class="divider"></div>
+
+                        <div class="row">
+                            <h6>Zooming in to the floor map will result in improved overlay.</h6>
+                        </div>
+                    </div>
+
+                    <div id="floor-tab2" class="col s12">
+                        <h6>To edit a floor's plan you can switch to the "Add" tab, select the "Floor Number" you want
+                            to change and upload the new image. The old image will be overwritten.</h6>
+                    </div>
+
+                    <div id="floor-tab3" class="col s12">
+                        <h6>Are you sure you want to delete this building?</h6>
+                        <button class="btn waves-effect waves-light red" type="submit" name="action">Confirm deletion
+                        </button>
+                    </div>
+
+                    <div id="floor-tab4" class="col s12">
+                        <h6>This shows the registered WiFi Maps.</h6>
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Show Maps</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab3" class="col s12">
+        <div class="row">
+            <strong><h6 class="building-name">Building name</h6></strong>
+
+            <!--POI dropdown structure.-->
+            <ul id="POI-dropdown" class="dropdown-content">
+                <li><a href="#">Demo 1</a></li>
+                <li><a href="#">Demo 2</a></li>
+            </ul>
+
+            <!--POI dropdown trigger.-->
+            <a class="dropdown-button btn" href="#" data-activates="POI-dropdown">Select POI</a>
+
+            <div id="divider"></div>
+
+            <div id="POI-toolbox">
+                <h6>POI toolbox</h6>
+
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s4"><a href="#POI-tab1">Add</a></li>
+                            <li class="tab col s4"><a href="#POI-tab2">IMPORT (JSON)</a></li>
+                            <li class="tab col s4"><a href="#POI-tab3">EXPORT (EXCEL)</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="POI-tab1" class="col s12">
+                        <div class="row">
+                            <span class="poi-draggable"><img src="http://placehold.it/30x30">Drag a new POI...</span>
+                        </div>
+
+                        <div class="row">
+                            <span class="poi-draggable"><img src="http://placehold.it/30x30">Drag to add a connector...</span>
+                        </div>
+                    </div>
+
+                    <div id="POI-tab2" class="col s12">
+                        <h6>Import JSON</h6>
+                    </div>
+
+                    <div id="POI-tab3" class="col s12">
+                        <h6>Export to Excel</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!--End of fixed side header.-->
+
+<!--Import jQuery before materialize.js-->
+
+<script>
+    var map = "";
+    var currentlocation = {lat: -25.363, lng: 131.044};
+    var markers = [];
+    var canvasOverlay = null;
+    isCanvasOverlayActive = false;
+
+    function initMap() {
+
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            loadMap();
+        }
+
+
+    }
+
+    function showPosition(position) {
+
+        currentlocation = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+
+        loadMap();
+
+    }
+
+    function loadMap() {
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 18,
+            center: currentlocation
+        });
+
+
+        google.maps.event.addListener(map, 'click', function (event) {
+
+            if (flagclick == 1) {
+                var click_location = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+                addMarker(click_location, true);
+            }
+        });
+
+        loadBuildings();
+    }
+
+
+    var building_list = [];
+
+    function loadBuildings() {
+
+
+        $.ajax({
+            url: FETCH_ALL_BUILDING,
+            data: '{"username":"username","password":"password"}',
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                building_list = data.buildings;
+
+
+                for (var i = 0; i < building_list.length; i++) {
+
+
+                    $('#buildings').append(
+                        $('<option></option>')
+                            .val(i)
+                            .html(building_list[i].name)
+                    );
+
+                    console.log(i +" "+ building_list.length);
+
+
+                }
+            }
+
+        });
+
+
+    }
+
+    $('#buildings').on('change', function () {
+
+
+        if (this.value != "-1") {
+            //building_list[this.value].coordinates_lat
+
+
+            map.setCenter(new google.maps.LatLng(building_list[this.value].coordinates_lat, building_list[this.value].coordinates_lon));
+
+
+            var current_location = {
+                lat: parseFloat(building_list[this.value].coordinates_lat),
+                lng: parseFloat(building_list[this.value].coordinates_lon)
+            };
+
+            addMarker(current_location, false);
+
+        }
+    });
+
+    function addMarker(location, draggable) {
+        var marker = new google.maps.Marker({
+            position: location,
+            draggable: draggable,
+            animation: google.maps.Animation.DROP,
+            map: map
+        });
+        markers.push(marker);
+    }
+
+    function setMapOnAll(marker) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(marker);
+            markers = [];
+        }
+    }
+
+
+    function addingBuilding() {
+        setMapOnAll(null);
+
+
+        flagclick = 1;
+
+    }
+
+    var flagclick = 0;
+
+
+    function saveBuilding() {
+
+
+        if (flagclick == 1) {
+
+
+            if ($('#building_name').val().trim().length < 3) {
+                alert('Please enter building name of atleast 3 characters.')
+            }
+            else {
+
+
+                var data = {
+                    "description": "-",
+                    "name": $('#building_name').val(),
+                    "is_published": "true",
+                    "address": "-",
+                    "url": "-",
+                    "bucode": "",
+                    "owner_id": "1234",
+                    "coordinates_lat": markers[0].getPosition().lat().toString(),
+                    "coordinates_lon": markers[0].getPosition().lng().toString()
+                }
+
+
+                $.ajax({
+                    url: ADD_BUILDING,
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    type: "POST",
+                    success: function (data) {
+                        location.reload();
+                    }
+
+                });
+
+            }
+
+
+        } else {
+            alert('Add marker to map first.');
+        }
+    }
+
+    $(document).ready(function () {
+        $('#imgInp').change(function handleImage(e) {
+            // alert("ImgInp changed!");
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                // alert("Second");
+                var imgObj = new Image();
+                // alert("Message: " + event.target.result);
+                imgObj.src = event.target.result;
+                imgObj.onload = function () {
+                    canvasOverlay = new CanvasOverlay(imgObj, map);
+                    isCanvasOverlayActive = true;
+
+                    $('#floor_control_bar').css("visibility", "visible");
+
+                    // hide previous floorplan
+
+                }
+
+            };
+            reader.readAsDataURL(e.target.files[0]);
+
+            this.disabled = true;
+        });
+    });
+
+    function cancelEvent() {
+        if (canvasOverlay) {
+            canvasOverlay.setMap(null);
+        }
+
+
+        var x = $('#floor_file');
+        x.val('')
+        x.prop('disabled', false);
+
+        isCanvasOverlayActive = false;
+
+    }
+
+    function addFloor() {
+        alert($('#floor-number').val());
+        if ($('#buildings').val() == -1) {
+            alert('Please select the building first!');
+            return;
+        } else if ($('#floor-number').val() == "") {
+            alert("Enter floor number first!");
+            return;
+        }
+        else {
+
+
+            var data = {
+                "username": "username",
+                "password": "password",
+                "is_published": "true",
+                "buid": building_list[$('#buildings').val()].buid,
+                "floor_name": $('#floor-number').val(),
+                "description": $('#floor-number').val(),
+                "floor_number": $('#floor-number').val(),
+                "owner_id": "1234"
+            }
+
+
+            $.ajax({
+                url: ADD_FLOOR,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                type: "POST",
+                success: function (data) {
+                    alert(JSON.stringify(data));
+                    submitEvent();
+                    // location.reload();
+                }
+
+            });
+
+        }
+    }
+
+    function submitEvent() {
+
+        if (!canvasOverlay) {
+            return;
+        }
+
+        if ($('#buidlings').val() == "-1") {
+            console.log('building is undefined');
+            alert("Something went wrong. It seems like there is no building selected");
+            return;
+        }
+
+        var newFl = {
+            is_published: 'true',
+            buid: building_list[$('#buildings').val()].buid,
+            floor_name: $('#floor-number').val(),
+            description: $('#floor-number').val(),
+            floor_number: $('#floor-number').val(),
+            owner_id: "1234"
+
+        };
+
+        var floor = {
+            floor_plan_coords: {},
+            floor_plan_base64_data: {},
+            floor_plan_groundOverlay: null
+        };
+
+
+        // create the proper image inside the canvas
+        canvasOverlay.drawBoundingCanvas();
+
+        // create the ground overlay and destroy the canvasOverlay object
+        // and also set the floor_plan_coords in $scope.data
+        var bl = canvasOverlay.bottom_left_coords;
+        var tr = canvasOverlay.top_right_coords;
+        newFl.bottom_left_lat = bl.lat() + "";
+        newFl.bottom_left_lng = bl.lng() + "";
+        newFl.top_right_lat = tr.lat() + "";
+        newFl.top_right_lng = tr.lng() + "";
+        var data = canvasOverlay.getCanvas().toDataURL("image/png"); // defaults to png
+        floor.floor_plan_base64_data = data;
+        var imageBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(bl.lat(), bl.lng()),
+            new google.maps.LatLng(tr.lat(), tr.lng()));
+        floor.floor_plan_groundOverlay = new USGSOverlay(imageBounds, data, map);
+
+        canvasOverlay.setMap(null); // remove the canvas overlay since the groundoverlay is placed
+        $('#floor_file').prop('disabled', false);
+        isCanvasOverlayActive = false;
+
+        var fl_data = floor.floor_plan_base64_data.replace('data:image/png;base64,', '');
+        var uarray = LPUtils.Base64Binary.decode(fl_data);
+        var blob = new Blob([uarray]);
+        fl_data = "";
+        for (var i = 0; i < uarray.length; i++) {
+            fl_data += uarray[i];
+        }
+        var json_req = JSON.stringify(newFl);
+
+        var formData = new FormData();
+        formData.append("json", json_req);
+        formData.append("floorplan", blob);
+        $.ajax({
+            url: FLOOR_PLAN_UPLOAD,
+            data: formData,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function (data) {
+                alert(data);
+            }
+        });
+    }
+
+</script>
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZWmnDLUL4qwWOGqY0yQF2bCoQUW0hlvU&callback=initMap">
+</script>
+<script src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".button-collapse").sideNav();
+    });
+</script>
+<!--<script src="js/AdminPanelAPI.js" type="text/javascript"></script>-->
+<script src="js/CanvasOverlay.js"></script>
+<script src="js/AdminPanelAPI.js"></script>
+<script src="js/jquery.ui.rotatable.min.js"></script>
+<script src="js/USGSOverlay.js"></script>
+<script src="js/LPUtils.js"></script>
+
+</body>
+</html>

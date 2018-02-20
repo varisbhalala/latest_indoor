@@ -1,0 +1,95 @@
+#imageLocation {
+	position: absolute;
+	top: 25%;
+	left: 40%;
+	z-index: 9;
+}
+
+nav {
+	z-index: 10;
+	background-color: cornflowerblue;
+}
+
+.search-div {
+	display: inline-block;
+	background: #fff;
+	padding: 10px;
+	padding-bottom: 0;
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	border-radius: 3px;
+}
+
+#search-input {
+	font-family: Roboto;
+	font-size: 15px;
+	font-weight: 300;
+	padding: 0 20px 0 20px;
+	text-overflow: ellipsis;
+	width: 350px;
+}
+
+#hamburger-menu {
+	color: #000;
+}
+
+input, a {
+	background-color: transparent;
+	border: 0;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -2;
+}
+
+.fixed-header-div {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 470px;
+	background: #fff;
+}
+
+#div-heading {
+	text-align: center;
+}
+/*
+
+table {
+	text-align: center;
+}
+
+.centered {
+	display: flex;
+	align-items: flex-start;
+	margin: 0;
+	padding: 0 10px 0 10px;
+}
+
+.item-holder {
+	text-align: center;
+	font-size: 12px;
+	flex: 1;
+}
+
+.function-btn {
+	padding-left: 15px;
+	padding-right: 15px;
+	color: #fff;
+	background-color: darkslategrey;
+}
+
+.item-holder i, .item-holder span {
+	display: inline-block;
+
+}*/
+
+.ui-resizable-se, .ui-resizable-sw, .ui-resizable-nw, .ui-resizable-ne {
+	background: #f00;
+}

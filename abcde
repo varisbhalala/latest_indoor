@@ -1,0 +1,26 @@
+<html>
+<head>
+<style type="javascript">
+function readURL(event){
+		 var getImagePath = URL.createObjectURL(event.target.files[0]);
+		 $('#clock').css('background-image', 'url(' + getImagePath + ')');
+		}
+</style>
+<style type="css">
+#clock{
+		   background-image:url('');
+		   background-size:cover;
+		   background-position: center;
+		   height: 250px; width: 250px;
+		   border: 1px solid #bbb;
+			}
+</style>
+
+</head>
+
+
+<body>
+<input type='file' id='getval' name="background-image" onchange="readURL(event)" /><br/><br/>
+<div id='clock'></div>
+</body>
+</html>

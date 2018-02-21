@@ -145,16 +145,22 @@
 
         <div id="tab2" class="col s12">
             <div class="row">
-                <strong><h6 class="building-name">Building name</h6></strong>
+                <strong><h6 class="floor-name">Floor name</h6></strong>
 
                 <!--Floor dropdown structure.-->
-                <ul id="floor-dropdown" class="dropdown-content">
-                    <li><a href="#">Demo 1</a></li>
-                    <li><a href="#">Demo 2</a></li>
-                </ul>
+                <!--<ul id="floor-dropdown" class="dropdown-content">-->
+                    <!--<li><a href="#">Demo 1</a></li>-->
+                    <!--<li><a href="#">Demo 2</a></li>-->
+                <!--</ul>-->
+
+                <select id="floors">
+                    <option value="-1">Select Floor</option>
+
+
+                </select>
 
                 <!--Floor dropdown trigger.-->
-                <a class="dropdown-button btn" href="#" data-activates="floor-dropdown">Select a floor</a>
+                <!--<a class="dropdown-button btn" href="#" data-activates="floor-dropdown">Select a floor</a>-->
 
                 <div id="divider"></div>
 
@@ -303,6 +309,11 @@
     var canvasOverlay = null;
     isCanvasOverlayActive = false;
 
+    var building_list = []; //Array to store the buildings from the DB.
+    var floor_list = [];    //Array to store the floors from the DB.
+    var usgsObject; //Object to retrive the image of the selected floor.
+
+
     function initMap() {
 
 
@@ -343,9 +354,6 @@
         loadBuildings();
     }
 
-
-    var building_list = [];
-
     function loadBuildings() {
 
 
@@ -368,7 +376,7 @@
                             .html(building_list[i].name)
                     );
 
-                    console.log(i +" "+ building_list.length);
+                    // console.log(i +" "+ building_list.length);
 
 
                 }
@@ -385,7 +393,8 @@
         if (this.value != "-1") {
             //building_list[this.value].coordinates_lat
 
-
+            $('#floors').empty();
+            loadFloors();
             map.setCenter(new google.maps.LatLng(building_list[this.value].coordinates_lat, building_list[this.value].coordinates_lon));
 
 
@@ -407,6 +416,103 @@
             map: map
         });
         markers.push(marker);
+    }
+
+    function loadFloors() {
+        console.log("BUID: " + building_list[$('#buildings').val()].buid);
+        $.ajax({
+            url: FETCH_ALL_FLOORS,
+            data: '{"username":"username","password":"password","buid":"'+ building_list[$('#buildings').val()].buid+'"}',
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                floor_list = data.floors;
+
+
+                for (var i = 0; i < floor_list.length; i++) {
+
+
+                    $('#floors').append(
+                        $('<option></option>')
+                            .val(i)
+                            .html(floor_list[i].floor_name)
+                    );
+
+                    console.log(i +" "+ floor_list.length);
+
+
+                }
+            }
+
+        });
+    }
+
+    $('#floors').on('change', function () {
+
+
+        if (this.value != "-1") {
+            //building_list[this.value].coordinates_lat
+
+            loadFloorImage();
+
+
+        }
+    });
+
+
+
+        function loadFloorImage() {
+            if(usgsObject != null) {
+                usgsObject.setMap(null);
+            }
+
+        console.log("BUID: " + building_list[$('#buildings').val()].buid);
+        $.ajax({
+            url: GET_FLOOR_IMAGE + '/' + building_list[$('#buildings').val()].buid + '/' + floor_list[$('#floors').val()].floor_number,
+            data: '{"username":"username","password":"password","buid":"'+ building_list[$('#buildings').val()].buid+'","owner_id":"1234","floor_number":"'+floor_list[$('#floors').val()].floor_number+'"}',
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+               // alert(data);
+                // floor_list = data.floors;
+
+
+                // for (var i = 0; i < floor_list.length; i++) {
+                //
+                //
+                //     $('#floors').append(
+                //         $('<option></option>')
+                //             .val(i)
+                //             .html(floor_list[i].floor_name)
+                //     );
+                //
+                //     console.log(i +" "+ floor_list.length);
+                //
+                //
+                // }
+
+
+                var imageBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(floor_list[$('#floors').val()].bottom_left_lat, floor_list[$('#floors').val()].bottom_left_lng),
+                    new google.maps.LatLng(floor_list[$('#floors').val()].top_right_lat, floor_list[$('#floors').val()].top_right_lng)
+                );
+
+
+                usgsObject = new USGSOverlay(imageBounds, "data:image/png;base64," + data, map);
+
+                map.setCenter(new google.maps.LatLng(building_list[$('#buildings').val()].coordinates_lat, building_list[$('#buildings').val()].coordinates_lon));
+
+
+                var current_location = {
+                    lat: parseFloat(building_list[$('#buildings').val()].coordinates_lat),
+                    lng: parseFloat(building_list[$('#buildings').val()].coordinates_lon)
+                };
+
+                addMarker(current_location, false);
+
+            }
+        });
     }
 
     function setMapOnAll(marker) {

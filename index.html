@@ -76,8 +76,8 @@
         <div id="tab1" class="col s12">
             <!--Building name dropdown structure.-->
             <!--<ul id="building-dropdown" class="dropdown-content">-->
-                <!--<li><a href="#">Demo</a></li>-->
-                <!--<li><a href="#">Demo</a></li>-->
+            <!--<li><a href="#">Demo</a></li>-->
+            <!--<li><a href="#">Demo</a></li>-->
             <!--</ul>-->
 
             <!--Building name dropdown button trigger.-->
@@ -149,8 +149,8 @@
 
                 <!--Floor dropdown structure.-->
                 <!--<ul id="floor-dropdown" class="dropdown-content">-->
-                    <!--<li><a href="#">Demo 1</a></li>-->
-                    <!--<li><a href="#">Demo 2</a></li>-->
+                <!--<li><a href="#">Demo 1</a></li>-->
+                <!--<li><a href="#">Demo 2</a></li>-->
                 <!--</ul>-->
 
                 <select id="floors">
@@ -253,45 +253,67 @@
             <strong><h6 class="building-name">Building name</h6></strong>
 
             <!--POI dropdown structure.-->
-            <ul id="POI-dropdown" class="dropdown-content">
-                <li><a href="#">Demo 1</a></li>
-                <li><a href="#">Demo 2</a></li>
-            </ul>
+            <!--<ul id="POI-dropdown" class="dropdown-content">-->
+            <!--<li><a href="#">Demo 1</a></li>-->
+            <!--<li><a href="#">Demo 2</a></li>-->
+            <!--</ul>-->
 
             <!--POI dropdown trigger.-->
-            <a class="dropdown-button btn" href="#" data-activates="POI-dropdown">Select POI</a>
+            <!--<a class="dropdown-button btn" href="#" data-activates="POI-dropdown">Select POI</a>-->
 
-            <div id="divider"></div>
+            <!--<div id="divider"></div>-->
 
-            <div id="POI-toolbox">
-                <h6>POI toolbox</h6>
+            <!--<div id="POI-toolbox">-->
+            <!--<h6>POI toolbox</h6>-->
 
+            <!--<div class="row">-->
+            <!--<div class="col s12">-->
+            <!--<ul class="tabs">-->
+            <!--<li class="tab col s4"><a href="#POI-tab1">Add</a></li>-->
+            <!--<li class="tab col s4"><a href="#POI-tab2">IMPORT (JSON)</a></li>-->
+            <!--<li class="tab col s4"><a href="#POI-tab3">EXPORT (EXCEL)</a></li>-->
+            <!--</ul>-->
+            <!--</div>-->
+
+            <!--<div id="POI-tab1" class="col s12">-->
+            <!--<div class="row">-->
+            <!--<span class="poi-draggable"><img src="http://placehold.it/30x30">Drag a new POI...</span>-->
+            <!--</div>-->
+
+            <!--<div class="row">-->
+            <!--<span class="poi-draggable"><img src="http://placehold.it/30x30">Drag to add a connector...</span>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--<div id="POI-tab2" class="col s12">-->
+            <!--<h6>Import JSON</h6>-->
+            <!--</div>-->
+
+            <!--<div id="POI-tab3" class="col s12">-->
+            <!--<h6>Export to Excel</h6>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--POI Adding structure.-->
+            <div id="poi-tab1" class="col s12">
                 <div class="row">
-                    <div class="col s12">
-                        <ul class="tabs">
-                            <li class="tab col s4"><a href="#POI-tab1">Add</a></li>
-                            <li class="tab col s4"><a href="#POI-tab2">IMPORT (JSON)</a></li>
-                            <li class="tab col s4"><a href="#POI-tab3">EXPORT (EXCEL)</a></li>
-                        </ul>
-                    </div>
+                    <button class="btn waves-effect waves-light" type="button" onclick="addingPOI();">Click
+                        here and Click on Map to Add POI
+                    </button>
+                </div>
 
-                    <div id="POI-tab1" class="col s12">
-                        <div class="row">
-                            <span class="poi-draggable"><img src="http://placehold.it/30x30">Drag a new POI...</span>
-                        </div>
+                <div class="edit-form-poi">
 
-                        <div class="row">
-                            <span class="poi-draggable"><img src="http://placehold.it/30x30">Drag to add a connector...</span>
+
+                    <div class="row">
+                        <div class="input-field" class="col s12">
+                            <input placeholder="POI Name" id="poi_name" type="text">
                         </div>
                     </div>
 
-                    <div id="POI-tab2" class="col s12">
-                        <h6>Import JSON</h6>
-                    </div>
 
-                    <div id="POI-tab3" class="col s12">
-                        <h6>Export to Excel</h6>
-                    </div>
+                    <button class="btn waves-effect waves-light" type="button" onclick="savePOI();">Save POI</button>
                 </div>
             </div>
         </div>
@@ -313,6 +335,7 @@
     var floor_list = [];    //Array to store the floors from the DB.
     var usgsObject; //Object to retrive the image of the selected floor.
 
+    var POI_list = []; //Array to retrieve the POIs of that particular floor.
 
     function initMap() {
 
@@ -422,7 +445,7 @@
         console.log("BUID: " + building_list[$('#buildings').val()].buid);
         $.ajax({
             url: FETCH_ALL_FLOORS,
-            data: '{"username":"username","password":"password","buid":"'+ building_list[$('#buildings').val()].buid+'"}',
+            data: '{"username":"username","password":"password","buid":"' + building_list[$('#buildings').val()].buid + '"}',
             contentType: "application/json",
             type: "POST",
             success: function (data) {
@@ -439,7 +462,7 @@
                             .html(floor_list[i].floor_name)
                     );
 
-                    console.log(i +" "+ floor_list.length);
+                    console.log(i + " " + floor_list.length);
 
 
                 }
@@ -455,26 +478,25 @@
             //building_list[this.value].coordinates_lat
 
             loadFloorImage();
-
+            loadPOIList();
 
         }
     });
 
 
-
-        function loadFloorImage() {
-            if(usgsObject != null) {
-                usgsObject.setMap(null);
-            }
+    function loadFloorImage() {
+        if (usgsObject != null) {
+            usgsObject.setMap(null);
+        }
 
         console.log("BUID: " + building_list[$('#buildings').val()].buid);
         $.ajax({
             url: GET_FLOOR_IMAGE + '/' + building_list[$('#buildings').val()].buid + '/' + floor_list[$('#floors').val()].floor_number,
-            data: '{"username":"username","password":"password","buid":"'+ building_list[$('#buildings').val()].buid+'","owner_id":"1234","floor_number":"'+floor_list[$('#floors').val()].floor_number+'"}',
+            data: '{"username":"username","password":"password","buid":"' + building_list[$('#buildings').val()].buid + '","owner_id":"1234","floor_number":"' + floor_list[$('#floors').val()].floor_number + '"}',
             contentType: "application/json",
             type: "POST",
             success: function (data) {
-               // alert(data);
+                // alert(data);
                 // floor_list = data.floors;
 
 
@@ -732,6 +754,104 @@
             }
         });
     }
+
+    function addingPOI() {
+        setMapOnAll(null);
+
+
+        flagclick = 1;
+
+    }
+
+    flagclick = 0;
+
+
+    function savePOI() {
+
+
+        if (flagclick == 1) {
+
+
+            if ($('#poi_name').val().trim().length < 3) {
+                alert('Please enter POI name of atleast 3 characters.')
+            }
+            else {
+
+
+                var data = {
+                    "name": $('#poi_name').val(),
+                    "is_published": "true",
+                    "address": "-",
+                    "url": "-",
+                    "bucode": "",
+                    "owner_id": "1234",
+                    "coordinates_lat": markers[0].getPosition().lat().toString(),
+                    "coordinates_lon": markers[0].getPosition().lng().toString(),
+                    "buid": building_list[$('#buildings').val()].buid,
+                    "floor_number": "1",
+                    "floor_name": "1",
+                    "is_door": "false",
+                    "is_building_entrance": "false",
+                    "description": "",
+                    "pois_type": "Office", //TODO: This is supposed to be the input the user gives from the dropdown menu.
+                    "pois_type2": "",
+                    "image": "url_to_pois_image", //TODO: Check what this is supposed to mean.
+                }
+
+
+                $.ajax({
+                    url: ADD_POI, //TODO: Add this URL to the AdminPanelAPI.js
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    type: "POST",
+                    success: function (data) {
+                        location.reload();
+                    }
+
+                });
+
+            }
+
+
+        } else {
+            alert('Add marker to map first.');
+        }
+    }
+
+    function loadPOIList(){
+        console.log("BUID: " + building_list[$('#buildings').val()].buid);
+        $.ajax({
+            url: FETCH_ALL_POI, //TODO: Add this URL to the AdminPanel.js
+            data: '{"username":"username","password":"password","buid":"' + building_list[$('#buildings').val()].buid + '"}', //TODO: Modify the parameters according to the JSON data to be passed to retrieve the POI list.
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                POI_list = data.POI; //TODO: Check if this is the name of the JSON array.
+
+
+                for (var i = 0; i < POI_list.length; i++) {
+                    $('#poi_name').append(
+                        $('<option></option>')
+                            .val(i)
+                            .html(floor_list[i].floor_name)
+                    );
+
+                    console.log(i + " " + POI_list.length);
+
+
+                }
+            }
+
+        });
+    }
+
+    //TODO: Not sure about this function. Kindly check it.
+    $('#poi_name').on('change', function () {
+        if (this.value != "-1") {
+            map.setCenter(new google.maps.LatLng(POI_list[$('#buildings').val()].coordinates_lat, POI_list[$('#buildings').val()].coordinates_lon));
+        }
+    });
 
 </script>
 <script

@@ -17,7 +17,7 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-
+    <script src="js/AdminPanelAPI.js"></script>
     <style>
         select {
             display: block !important;
@@ -122,8 +122,7 @@
                             </div>
 
 
-                            <button class="btn waves-effect waves-light" type="button" onclick="saveBuilding();">Save
-                                Building
+                            <button class="btn waves-effect waves-light" type="button" onclick="saveBuilding();">Save Building
                             </button>
                         </div>
                     </div>
@@ -132,8 +131,7 @@
                     <div id="building-tab3" class="col s12">
                         <div class="row">
                             <h6>Are you sure you want to delete this building?</h6>
-                            <button class="btn waves-effect waves-light red" type="submit" name="action">Confirm
-                                deletion
+                            <button class="btn waves-effect waves-light red" type="submit" onclick="deleteBuilding();" id="deleteBuilding" name="action">Confirm deletion
                             </button>
                         </div>
                     </div>
@@ -171,9 +169,9 @@
                         <div class="col s12">
                             <ul class="tabs">
                                 <li class="tab col s3"><a href="#floor-tab1">Add</a></li>
-                                <li class="tab col s3"><a href="#floor-tab2">Edit</a></li>
+
                                 <li class="tab col s3"><a href="#floor-tab3">Delete</a></li>
-                                <li class="tab col s3"><a href="#floor-tab4">WiFi Maps</a></li>
+
                             </ul>
                         </div>
                         <form id="form1" runat="server" method="post">
@@ -223,26 +221,12 @@
 
                         <div class="divider"></div>
 
-                        <div class="row">
-                            <h6>Zooming in to the floor map will result in improved overlay.</h6>
-                        </div>
+
                     </div>
 
-                    <div id="floor-tab2" class="col s12">
-                        <h6>To edit a floor's plan you can switch to the "Add" tab, select the "Floor Number" you want
-                            to change and upload the new image. The old image will be overwritten.</h6>
-                    </div>
 
-                    <div id="floor-tab3" class="col s12">
-                        <h6>Are you sure you want to delete this building?</h6>
-                        <button class="btn waves-effect waves-light red" type="submit" name="action">Confirm deletion
-                        </button>
-                    </div>
 
-                    <div id="floor-tab4" class="col s12">
-                        <h6>This shows the registered WiFi Maps.</h6>
-                        <button class="btn waves-effect waves-light" type="submit" name="action">Show Maps</button>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -298,6 +282,11 @@
             <!--POI Adding structure.-->
             <div id="poi-tab1" class="col s12">
                 <div class="row">
+                    <select id="pois">
+                        <option value="-1">Select POIS</option>
+
+
+                    </select>
                     <button class="btn waves-effect waves-light" type="button" onclick="addingPOI();">Click
                         here and Click on Map to Add POI
                     </button>
@@ -312,7 +301,7 @@
                         </div>
                     </div>
 
-
+                    <button class="btn waves-effect waves-light red" type="button" id="deletePOI">Delete POI</button>
                     <button class="btn waves-effect waves-light" type="button" onclick="savePOI();">Save POI</button>
                 </div>
             </div>
@@ -334,18 +323,17 @@
     var building_list = []; //Array to store the buildings from the DB.
     var floor_list = [];    //Array to store the floors from the DB.
     var usgsObject; //Object to retrive the image of the selected floor.
-
     var POI_list = []; //Array to retrieve the POIs of that particular floor.
 
     function initMap() {
 
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            loadMap();
-        }
-
+        // if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(showPosition);
+        // } else {
+        //     loadMap();
+        // }
+        loadMap();
 
     }
 
@@ -363,6 +351,64 @@
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 18,
             center: currentlocation
+        });
+
+        var input = document.getElementById('search-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function(marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function(place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
         });
 
 
@@ -409,7 +455,29 @@
 
 
     }
+    $('#deleteBuilding').on('click' , function () {
+        if(this.value != -1) {
+            alert("confirm delete");
 
+            deleteBuilding(building_list[$('#buildings').val()].buid);
+        }
+    });
+    $('#deleteFloor').on('click' , function () {
+        if(this.value != -1) {
+            alert("confirm delete");
+            alert("building: " + building_list[$('#buildings').val()].buid);
+            alert("floor:" + floor_list[$('#floors').val()].floor_number)
+            deleteFloor(building_list[$('#buildings').val()].buid, floor_list[$('#floors').val()].floor_number);
+        }
+    });
+    $('#deletePOI').on('click' , function () {
+        if(this.value != -1) {
+            alert("confirm delete");
+            alert("building: " + building_list[$('#buildings').val()].buid);
+            alert("puid: " + POI_list[$('#pois').val()].puid);
+            deletePOI(building_list[$('#buildings').val()].buid, POI_list[$('#pois').val()].puid);
+        }
+    });
     $('#buildings').on('change', function () {
 
 
@@ -599,7 +667,74 @@
             alert('Add marker to map first.');
         }
     }
+    function deleteBuilding(buid) {
+       var data =  {
+           "username":"username",
+           "password":"password",
+           "buid":buid,
+           "owner_id":"1234"
+       }
+        $.ajax({
+            url: DELETE_BUILDING,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                location.reload();
+                alert("deleteion done");
+            }
 
+        });
+
+    }
+    function deleteFloor(buid , floor_number) {
+        alert(buid);
+        alert(floor_number);
+        var data =  {
+            "floor_number":floor_number,
+            "buid":buid,
+            "username":"username",
+            "password":"password",
+            "owner_id":"1234"
+        }
+
+        $.ajax({
+            url: DELETE_FLOOR,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                //location.reload();
+                alert("deleteion done");
+            }
+
+        });
+
+    }
+    function deletePOI(buid , puid) {
+
+        var data =  {
+            "buid":buid,
+            "owner_id":"1234",
+            "puid":puid,
+            "username":"username",
+            "password":"password"
+        }
+
+        $.ajax({
+            url: DELETE_POI,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (data) {
+                location.reload();
+
+                alert("deleteion done");
+            }
+
+        });
+
+    }
     $(document).ready(function () {
         $('#imgInp').change(function handleImage(e) {
             // alert("ImgInp changed!");
@@ -788,7 +923,7 @@
                     "coordinates_lat": markers[0].getPosition().lat().toString(),
                     "coordinates_lon": markers[0].getPosition().lng().toString(),
                     "buid": building_list[$('#buildings').val()].buid,
-                    "floor_number": "1",
+                    "floor_number": $("#floors option:selected").text(),
                     "floor_name": "1",
                     "is_door": "false",
                     "is_building_entrance": "false",
@@ -822,19 +957,19 @@
         console.log("BUID: " + building_list[$('#buildings').val()].buid);
         $.ajax({
             url: FETCH_ALL_POI, //TODO: Add this URL to the AdminPanel.js
-            data: '{"username":"username","password":"password","buid":"' + building_list[$('#buildings').val()].buid + '"}', //TODO: Modify the parameters according to the JSON data to be passed to retrieve the POI list.
+            data: '{"username":"username","password":"password","buid":"' + building_list[$('#buildings').val()].buid + '" , "floor_number":"' +  $("#floors option:selected").text() + '"}', //TODO: Modify the parameters according to the JSON data to be passed to retrieve the POI list.
             contentType: "application/json",
             type: "POST",
             success: function (data) {
-                console.log(JSON.stringify(data));
-                POI_list = data.POI; //TODO: Check if this is the name of the JSON array.
-
+                //console.log(JSON.stringify(data));
+                POI_list = data.pois; //TODO: Check if this is the name of the JSON array.
+                console.log(JSON.stringify(POI_list))
 
                 for (var i = 0; i < POI_list.length; i++) {
-                    $('#poi_name').append(
+                    $('#pois').append(
                         $('<option></option>')
                             .val(i)
-                            .html(floor_list[i].floor_name)
+                            .html(POI_list[i].name)
                     );
 
                     console.log(i + " " + POI_list.length);
@@ -845,17 +980,35 @@
 
         });
     }
+    $('#pois').on('change', function () {
 
-    //TODO: Not sure about this function. Kindly check it.
-    $('#poi_name').on('change', function () {
+
         if (this.value != "-1") {
-            map.setCenter(new google.maps.LatLng(POI_list[$('#buildings').val()].coordinates_lat, POI_list[$('#buildings').val()].coordinates_lon));
+            //building_list[this.value].coordinates_lat
+
+            //map.setCenter(new google.maps.LatLng(POI_list[this.value].coordinates_lat, POI_list[this.value].coordinates_lon));
+
+
+            var current_location = {
+                lat: parseFloat(POI_list[this.value].coordinates_lat),
+                lng: parseFloat(POI_list[this.value].coordinates_lon)
+            };
+
+            addMarker(current_location, false);
+
         }
     });
 
+    //TODO: Not sure about this function. Kindly check it.
+    // $('#poi_name').on('change', function () {
+    //     if (this.value != "-1") {
+    //         map.setCenter(new google.maps.LatLng(POI_list[$('#buildings').val()].coordinates_lat, POI_list[$('#buildings').val()].coordinates_lon));
+    //     }
+    // });
+
 </script>
 <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZWmnDLUL4qwWOGqY0yQF2bCoQUW0hlvU&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZWmnDLUL4qwWOGqY0yQF2bCoQUW0hlvU&callback=initMap&libraries=places">
 </script>
 <script src="js/jquery-ui.js"></script>
 <script type="text/javascript" src="js/materialize.min.js"></script>
@@ -866,7 +1019,7 @@
 </script>
 <!--<script src="js/AdminPanelAPI.js" type="text/javascript"></script>-->
 <script src="js/CanvasOverlay.js"></script>
-<script src="js/AdminPanelAPI.js"></script>
+
 <script src="js/jquery.ui.rotatable.min.js"></script>
 <script src="js/USGSOverlay.js"></script>
 <script src="js/LPUtils.js"></script>

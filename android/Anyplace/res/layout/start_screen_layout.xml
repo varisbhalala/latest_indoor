@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/startLogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:contentDescription="Anyplace Logo"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/startText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startLogo"
+        android:gravity="center_horizontal"
+        android:shadowColor="#7e87bd"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text="Wifi Tracking"
+        android:textColor="#283891"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startText"
+        android:gravity="center_horizontal"
+        android:shadowColor="#7e87bd"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text=""
+        android:textColor="#28398f"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+</RelativeLayout>

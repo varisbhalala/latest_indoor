@@ -12,19 +12,19 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import java.util.ArrayList;
 
-/** I'm in ur package. Stealing ur variables. */
+
 public abstract class Watson extends FragmentActivity implements OnCreatePanelMenuListener, OnPreparePanelListener, OnMenuItemSelectedListener {
     private static final String TAG = "Watson";
 
-    /** Fragment interface for menu creation callback. */
+
     public interface OnCreateOptionsMenuListener {
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater);
     }
-    /** Fragment interface for menu preparation callback. */
+
     public interface OnPrepareOptionsMenuListener {
         public void onPrepareOptionsMenu(Menu menu);
     }
-    /** Fragment interface for menu item selection callback. */
+
     public interface OnOptionsItemSelectedListener {
         public boolean onOptionsItemSelected(MenuItem item);
     }

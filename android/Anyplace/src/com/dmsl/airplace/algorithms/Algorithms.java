@@ -1,4 +1,38 @@
-
+/*
+* AnyPlace: A free and open Indoor Navigation Service with superb accuracy!
+*
+* Anyplace is a first-of-a-kind indoor information service offering GPS-less
+* localization, navigation and search inside buildings using ordinary smartphones.
+*
+* Authors: C. Laoudias, G.Larkou, G. Constantinou, M. Constantinides, S. Nicolaou
+* 
+* Supervisor: Demetrios Zeinalipour-Yazti
+*
+* URL: http://anyplace.cs.ucy.ac.cy
+* Contact: anyplace@cs.ucy.ac.cy
+*
+* Copyright (c) 2015, Data Management Systems Lab (DMSL), University of Cyprus.
+* All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of
+* this software and associated documentation files (the "Software"), to deal in the
+* Software without restriction, including without limitation the rights to use, copy,
+* modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+* and to permit persons to whom the Software is furnished to do so, subject to the
+* following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
 
 package com.dmsl.airplace.algorithms;
 
@@ -81,6 +115,22 @@ public class Algorithms {
 
 	}
 
+	/**
+	 * Calculates user location based on Weighted/Not Weighted K Nearest
+	 * Neighbor (KNN) Algorithm
+	 * 
+	 * @param RM
+	 *            The radio map structure
+	 * 
+	 * @param Observed_RSS_Values
+	 *            RSS values currently observed
+	 * @param parameter
+	 * 
+	 * @param isWeighted
+	 *            To be weighted or not
+	 * 
+	 * @return The estimated user location
+	 */
 	private static String KNN_WKNN_Algorithm(RadioMap RM, ArrayList<String> Observed_RSS_Values, String parameter, boolean isWeighted) {
 
 		ArrayList<String> RSS_Values;
@@ -125,6 +175,23 @@ public class Algorithms {
 
 	}
 
+	/**
+	 * Calculates user location based on Probabilistic Maximum A Posteriori
+	 * (MAP) Algorithm or Probabilistic Minimum Mean Square Error (MMSE)
+	 * Algorithm
+	 * 
+	 * @param RM
+	 *            The radio map structure
+	 * 
+	 * @param Observed_RSS_Values
+	 *            RSS values currently observed
+	 * @param parameter
+	 * 
+	 * @param isWeighted
+	 *            To be weighted or not
+	 * 
+	 * @return The estimated user location
+	 */
 	private static String MAP_MMSE_Algorithm(RadioMap RM, ArrayList<String> Observed_RSS_Values, String parameter, boolean isWeighted) {
 
 		ArrayList<String> RSS_Values;
@@ -163,6 +230,17 @@ public class Algorithms {
 		return myLocation;
 	}
 
+	/**
+	 * Calculates the Euclidean distance between the currently observed RSS
+	 * values and the RSS values for a specific location.
+	 * 
+	 * @param l1
+	 *            RSS values of a location in radiomap
+	 * @param l2
+	 *            RSS values currently observed
+	 * 
+	 * @return The Euclidean distance, or MIN_VALUE for error
+	 */
 	private static float calculateEuclideanDistance(ArrayList<String> l1, ArrayList<String> l2) {
 
 		float finalResult = 0;
@@ -192,7 +270,17 @@ public class Algorithms {
 		return ((float) Math.sqrt(finalResult));
 	}
 
-
+	/**
+	 * Calculates the Probability of the user being in the currently observed
+	 * RSS values and the RSS values for a specific location.
+	 * 
+	 * @param l1
+	 *            RSS values of a location in radiomap
+	 * @param l2
+	 *            RSS values currently observed
+	 * 
+	 * @return The Probability for this location, or MIN_VALUE for error
+	 */
 	public static double calculateProbability(ArrayList<String> l1, ArrayList<String> l2, float sGreek) {
 
 		double finalResult = 1;
@@ -228,7 +316,16 @@ public class Algorithms {
 		return finalResult;
 	}
 
-
+	/**
+	 * Calculates the Average of the K locations that have the shortest
+	 * distances D
+	 * 
+	 * @param LocDistance_Results_List
+	 *            Locations-Distances pairs sorted by distance
+	 * @param K
+	 *            The number of locations used
+	 * @return The estimated user location, or null for error
+	 */
 	private static String calculateAverageKDistanceLocations(ArrayList<LocDistance> LocDistance_Results_List, int K) {
 
 		float sumX = 0.0f;
@@ -262,7 +359,16 @@ public class Algorithms {
 
 	}
 
-
+	/**
+	 * Calculates the Weighted Average of the K locations that have the shortest
+	 * distances D
+	 * 
+	 * @param LocDistance_Results_List
+	 *            Locations-Distances pairs sorted by distance
+	 * @param K
+	 *            The number of locations used
+	 * @return The estimated user location, or null for error
+	 */
 	public static String calculateWeightedAverageKDistanceLocations(ArrayList<LocDistance> LocDistance_Results_List, int K) {
 
 		double LocationWeight = 0.0f;

@@ -1,4 +1,5 @@
 
+
 package com.dmsl.anyplace;
 
 import java.io.File;
@@ -29,21 +30,7 @@ import android.widget.TextView;
 
 public class AndroidFileBrowser extends ListActivity implements OnClickListener {
 
-	/*
-	 * Select File Code Intent i = new Intent(getBaseContext(),
-	 * AndroidFileBrowser.class); Bundle extras = new Bundle();
-	 * extras.putBoolean("selectFolder", false); extras.putString("defaultPath",
-	 * preferences.getString("upload_file", "")); i.putExtras(extras);
-	 * startActivityForResult(i, UPLOAD_FILE);
-	 */
-	/*
-	 * 
-	 * case UPLOAD_FILE: if (resultCode == Activity.RESULT_OK) { Uri
-	 * selectedFile = data.getData(); String file = selectedFile.toString();
-	 * SharedPreferences.Editor editor = preferences.edit();
-	 * editor.putString("upload_file", file); editor.commit();
-	 * startUploadTask(file); } break; }
-	 */
+
 
 	// Enum For The Display Mode You Want
 	private enum DISPLAYMODE {
@@ -235,9 +222,7 @@ public class AndroidFileBrowser extends ListActivity implements OnClickListener 
 		}
 	}
 
-	/**
-	 * Control when back button is pressed
-	 * */
+
 	@Override
 	public void onBackPressed() {
 		finish();

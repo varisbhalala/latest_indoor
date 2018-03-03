@@ -132,41 +132,17 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 	private Marker gpsMarker = null;
 	private float bearing;
 	private ImageButton btnTrackme;
-	// </Load Building and Marker>
-
-	// UI Elements
 	ProgressBar progressBar;
-
-	// WiFi manager
 	private SimpleWifiManager wifi;
-
-	// WiFi Receiver
 	private WifiReceiver receiverWifi;
-
-	// TextView showing the current floor
 	private TextView textFloor;
-
-	// TextView showing the current scan results
 	private TextView scanResults;
-
-	// ProgressDialog
 	private ProgressDialog mSamplingProgressDialog;
-
-	// Path to store rss file
 	private String folder_path;
-
-	// Filename to store rss records
 	private String filename_rss;
-
-	// Button that records access points
 	private Button btnRecord;
-
-	// the textview that displays the current position and heading
 	private TextView mTrackingInfoView = null;
-
 	private SharedPreferences preferences;
-
-	// Positioning
 	private SensorsMain positioning;
 	private MovementDetector movementDetector;
 	private float raw_heading = 0.0f;
@@ -287,17 +263,13 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 		scanResults = (TextView) findViewById(R.id.detectedAPs);
 		mTrackingInfoView = (TextView) findViewById(R.id.trackingInfoData);
 
-		/*
-		 * Create a new location client, using the enclosing class to handle
-		 * callbacks.
-		 */
-		// Create the LocationRequest object
+
 		mLocationRequest = LocationRequest.create();
-		// Use high accuracy
+
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		// Set the update interval to 2 seconds
+
 		mLocationRequest.setInterval(2000);
-		// Set the fastest update interval to 1 second
+
 		mLocationRequest.setFastestInterval(1000);
 		mLocationClient = new LocationClient(this, this, this);
 
@@ -341,14 +313,11 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 		setUpMapIfNeeded();
 	}
 
-	/*
-	 * GOOGLE MAP FUNCTIONS
-	 */
+
 
 
 	private void setUpMapIfNeeded() {
-		// Do a null check to confirm that we have not already instantiated the
-		// map.
+
 		if (mMap != null) {
 			return;
 		}
@@ -523,18 +492,20 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 		return true;
 	}
 
-
 	private boolean checkPlayServices() {
-
+		// Check that Google Play services is available
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-
+		// If Google Play services is available
 		if (ConnectionResult.SUCCESS == resultCode) {
-
+			// In debug mode, log the status
 			Log.d("Location Updates", "Google Play services is available.");
-
+			// Continue
 			return true;
 		} else {
+			// Google Play services was not available for some reason
 
+			// GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+			// 0).show();
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
 				GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
 			} else {
@@ -552,15 +523,13 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 		if (connectionResult.hasResolution()) {
 			try {
-
+				// Start an Activity that tries to resolve the error
 				connectionResult.startResolutionForResult(this, LOCATION_CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
 			} catch (IntentSender.SendIntentException e) {
 				// Log the error
 				e.printStackTrace();
 			}
 		} else {
-
 			GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this, 0).show();
 		}
 
@@ -640,7 +609,7 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 	}
 
-	/** Called when we want to clear the map overlays */
+
 	private void clearMap() {
 		if (!checkReady()) {
 			return;
@@ -873,9 +842,6 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 	private void loadMapBasicLayer(BuildingModel b, FloorModel f) {
 		// remove the previous GroundOverlay or TileOverlay
 		mMap.clear();
-		// load the floorplan
-		// add the Tile Provider that uses our Building tiles over
-		// Google Maps
 		TileOverlay mTileOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new AnyPlaceMapTileProvider(getBaseContext(), b.buid, f.floor_number)).zIndex(0));
 	}
 
@@ -942,10 +908,6 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 						@Override
 						public void onErrorOrCancel(String result, ErrorType error) {
-							// Do not hide progress bar if previous task is running
-							// ErrorType.SINGLE_INSTANCE
-							// Do not hide progress bar because a new task will be created
-							// ErrorType.CANCELLED
 							if (error == ErrorType.EXCEPTION)
 								hideProgressBar();
 						}
@@ -988,8 +950,6 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 		if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			// Execute task parallel with others and multiple instances of
-			// itself
 			downloadRadioMapTaskBuid.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
 			downloadRadioMapTaskBuid.execute();
@@ -1113,6 +1073,13 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 		mTrackingInfoView.setText(sb.toString());
 
 	}
+
+	/*
+	 * Gets called whenever there is a change in sensors in positioning
+	 * 
+	 * @see com.lambrospetrou.anyplace.tracker.Positioning.PositioningListener#
+	 * onNewPosition()
+	 */
 
 	private class OrientationListener implements SensorsMain.IOrientationListener {
 		@Override
@@ -1310,13 +1277,13 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 	private void startRecordingInfo() {
 
-		// avoid recording when no floor has been selected
+
 		if (mCurrentFloor == null || !mCurrentFloor.isFloorValid()) {
 			Toast.makeText(getBaseContext(), "Load map before recording...", Toast.LENGTH_SHORT).show();
 			return;
 		}
 
-		// avoid recording when no floor has been selected
+
 		if (curLocation == null) {
 			Toast.makeText(getBaseContext(), "Click a position before recording...", Toast.LENGTH_SHORT).show();
 			return;
@@ -1429,7 +1396,7 @@ public class AnyplaceLoggerActivity extends SherlockFragmentActivity implements 
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(AnyplaceLoggerActivity.this);
 				if (mCurrentBuilding == null)
-					builder.setMessage("Thank you for improving the location quality of Anyplace");
+					builder.setMessage("Thank you for improving the location quality");
 				else
 					builder.setMessage("Thank you for improving the location quality for building " + mCurrentBuilding.name);
 

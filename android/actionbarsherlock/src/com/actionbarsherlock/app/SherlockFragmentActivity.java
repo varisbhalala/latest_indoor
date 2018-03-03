@@ -34,9 +34,6 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
     }
 
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Action bar and mode
-    ///////////////////////////////////////////////////////////////////////////
 
     public ActionBar getSupportActionBar() {
         return getSherlock().getActionBar();
@@ -53,9 +50,6 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
     public void onActionModeFinished(ActionMode mode) {}
 
 
-    ///////////////////////////////////////////////////////////////////////////
-    // General lifecycle/callback dispatching
-    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -133,9 +127,6 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
         getSherlock().dispatchRestoreInstanceState(savedInstanceState);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Native menu handling
-    ///////////////////////////////////////////////////////////////////////////
 
     public MenuInflater getSupportMenuInflater() {
         if (ActionBarSherlock.DEBUG) Log.d(TAG, "[getSupportMenuInflater]");
@@ -230,9 +221,6 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
     }
 
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Sherlock menu handling
-    ///////////////////////////////////////////////////////////////////////////
 
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
@@ -246,10 +234,6 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
         return false;
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Content
-    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void addContentView(View view, LayoutParams params) {
@@ -281,12 +265,7 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
         return super.findViewById(id);
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Progress Indication
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void setSupportProgress(int progress) {
+ public void setSupportProgress(int progress) {
         getSherlock().setProgress(progress);
     }
 

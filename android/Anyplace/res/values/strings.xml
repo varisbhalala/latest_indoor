@@ -39,7 +39,7 @@
 
 <resources>
 
-    <string name="default_server_ip_address">http://54.202.77.159:9000</string>
+    <string name="default_server_ip_address">http://34.211.65.206:9000</string>
 
     <string name="app_name">Wifi Tracking </string>
     <string name="app_name_logger">Wifi Tracking Logger</string>

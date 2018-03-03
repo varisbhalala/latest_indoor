@@ -1,3 +1,38 @@
+/*
+* AnyPlace: A free and open Indoor Navigation Service with superb accuracy!
+*
+* Anyplace is a first-of-a-kind indoor information service offering GPS-less
+* localization, navigation and search inside buildings using ordinary smartphones.
+*
+* Author(s): Timotheos Constambeys, Lambros Petrou
+* 
+* Supervisor: Demetrios Zeinalipour-Yazti
+*
+* URL: http://anyplace.cs.ucy.ac.cy
+* Contact: anyplace@cs.ucy.ac.cy
+*
+* Copyright (c) 2015, Data Management Systems Lab (DMSL), University of Cyprus.
+* All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of
+* this software and associated documentation files (the "Software"), to deal in the
+* Software without restriction, including without limitation the rights to use, copy,
+* modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+* and to permit persons to whom the Software is furnished to do so, subject to the
+* following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
 
 package com.dmsl.anyplace.wifi;
 
@@ -69,16 +104,26 @@ public class SimpleWifiManager {
 		timer = new Timer();
 	}
 
-
+	/**
+	 * @return if the WiFi manager performs a scan
+	 * */
 	public Boolean getIsScanning() {
 		return isScanning;
 	}
 
+	/**
+	 * @return the results of the current scan
+	 * */
 	public List<ScanResult> getScanResults() {
 		return mainWifi.getScanResults();
 	}
 
-
+	/**
+	 * Starts the Access Points Scanning
+	 * 
+	 * @param interval
+	 *            Interval used to perform a new scan
+	 * */
 	public void startScan(Long interval) {
 		synchronized (isScanning) {
 			isScanning = true;
@@ -106,6 +151,12 @@ public class SimpleWifiManager {
 
 	}
 
+	/**
+	 * Starts the Access Points Scanning
+	 * 
+	 * @param samples_interval
+	 *            Interval used to perform a new scan
+	 * */
 	public void startScan(String samples_interval) {
 		long interval = DEFAULT_INTERVAL;
 		try {
@@ -116,12 +167,19 @@ public class SimpleWifiManager {
 
 		startScan(interval);
 	}
-
+	
+	/**
+	 * Starts the Access Points Scanning
+	 *
+	 * */
 	public void startScan() {
 		startScan(DEFAULT_INTERVAL);
 	}
 
-
+	/**
+	 * Stop the Access Points Scanning
+	 *
+	 * */
 	public void stopScan() {
 
 		synchronized (isScanning) {
@@ -149,12 +207,19 @@ public class SimpleWifiManager {
 		mContext.unregisterReceiver(receiverWifi);
 	}
 
+	/**
+	 * Enables WiFi
+	 * */
 	private void enableWifi() {
 		if (!mainWifi.isWifiEnabled())
 			if (mainWifi.getWifiState() != WifiManager.WIFI_STATE_ENABLING)
 				mainWifi.setWifiEnabled(true);
 	}
-void disableWifi() {
+
+	/**
+	 * Disables WiFi
+	 * */
+	private void disableWifi() {
 		if (mainWifi.isWifiEnabled())
 			if (mainWifi.getWifiState() != WifiManager.WIFI_STATE_DISABLING)
 				mainWifi.setWifiEnabled(false);
